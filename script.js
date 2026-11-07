@@ -1,4 +1,3 @@
-//your JS code here. If required.
 document.addEventListener("DOMContentLoaded", () => {
     const fetchBtn = document.getElementById("fetch-button");
     const clickCountEl = document.getElementById("click-count");
@@ -6,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let clickCount = 0;
     let clickResetTimer = null;
-    let hasAlerted = false;
+    let shouldAlert = false;
 
     const rateLimiter = {
         queue: [],
@@ -70,17 +69,19 @@ document.addEventListener("DOMContentLoaded", () => {
         clickCount++;
         clickCountEl.textContent = clickCount;
 
-        if (clickCount > 5 && !hasAlerted) {
-            alert("Too many API calls. Please wait and try again.");
-            hasAlerted = true;
+        if (clickCount > 5) {
+            shouldAlert = true;
         }
 
         if (!clickResetTimer) {
             clickResetTimer = setTimeout(() => {
+                if (shouldAlert) {
+                    alert("Too many API calls. Please wait and try again.");
+                    shouldAlert = false;
+                }
                 clickCount = 0;
                 clickCountEl.textContent = clickCount;
                 clickResetTimer = null;
-                hasAlerted = false;
             }, 10000);
         }
 
